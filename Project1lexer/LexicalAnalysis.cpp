@@ -42,10 +42,11 @@ void LexicalAnalysis::getWordMap(string srcCode)
 		else if (charType=="SPECIAL") {
 			// 先往后读一位，因为符号可能是>=这样的
 			if (srcCode.length() > 1) {
-				string nextChar = srcCode.substr(1, 2);
+				string nextChar = srcCode.substr(1, 1);
 				string nextCharType = getCharType(nextChar);
 				// 读出特殊符号表
-				hash_map<string, int> specialMap = lextoken.getLexicalHashMap();
+				map<string, int> specialMap = lextoken.getLexicalHashMap();
+				string char2= thisChar + nextChar;
 				if (nextCharType == "SPECIAL" && specialMap.count(thisChar+nextChar)) {
 					int lexno = lextoken.getToken(thisChar + nextChar);
 					cout << "(" << lexno << "," << thisChar + nextChar << ")    ";
@@ -67,7 +68,7 @@ void LexicalAnalysis::getWordMap(string srcCode)
 }
 
 string LexicalAnalysis::getCharType(string str) {
-	if ((str[0] >= 'a' && str[0] <= 'z') || (str[0] >= 'a' && str[0] <= 'z')) {
+	if ((str[0] >= 'a' && str[0] <= 'z') || (str[0] >= 'A' && str[0] <= 'Z')) {
 		return "LETTER";
 	}
 	else if(str[0]>='0'&&str[0]<='9'){
@@ -85,10 +86,18 @@ string LexicalAnalysis::getCharType(string str) {
 void LexicalAnalysis::printWordMap(string srcFile) {
 	ReadSources rs(srcFile);
 	list<string>srcCodeList = rs.getCodeList();
-	for (int i = 1; i < srcCodeList.size() + 1; i++) {
-		cout << "line " << i;
+	int length = srcCodeList.size() + 1;
+	list<string>::iterator itor = srcCodeList.begin();
+	cout << endl << "源码" << endl;
+	for (int i = 1; i < length; i++) {
+		cout << "line " << i << " ";
+		cout << *itor++ << endl;
+	}
+	cout << endl << "词法分析结果" << endl;
+	for (int i = 1; i < length ; i++) {
+		cout << "line " << i<<" ";
 		getWordMap(srcCodeList.front());
-		cout << endl;
+		cout << endl ;
 		srcCodeList.pop_front();
 	}
 }

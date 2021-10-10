@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ReadSrc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="LexicalToken.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -26,12 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ReadSrc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LexicalToken.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="LexicalAnalysis.h">
       <Filter>头文件</Filter>
     </ClInclude>
