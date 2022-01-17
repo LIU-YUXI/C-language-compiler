@@ -9,3 +9,8 @@ C language compiler, the current implementation includes lexical analysis, synta
 C++,Qt,SLR分析方法
 
 ## results
+
+<img src="README.assets/image-20220117214338442.png" alt="image-20220117214338442" style="zoom:200%;" />
+
+![image-20220117214355797](README.assets/image-20220117214355797.png)
+
