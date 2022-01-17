@@ -1,0 +1,70 @@
+S -> Program
+Program -> StatString
+StatString -> State StatString
+StatString -> null
+State -> int id StatType
+State -> void id StatType
+State -> float id StatType
+StatType -> VarStat
+StatType -> FuncStat
+VarStat -> ;
+FuncStat -> CreateFunTable_m ( FormalPara ) Block
+CreateFunTable_m -> null
+FormalPara -> ParaList
+FormalPara -> null
+ParaList -> Para , ParaList
+ParaList -> Para
+Para -> int id
+Para -> float id
+Block -> { Inner String }
+Inner -> null
+Inner -> InnerVar ; Inner
+InnerVar -> int id
+InnerVar -> float id
+String -> Sentense String
+String -> null
+Sentense -> If
+Sentense -> While
+Sentense -> Return
+Sentense -> Equal
+Sentense -> For
+Sentense -> Switch
+For -> for ( ; Expr ; ) Block
+Switch -> switch ( id ) { CaseBlock DefaultBlock }
+CaseBlock -> case num : String
+DefaultBlock -> default : String
+Equal -> id = Expr ;
+Return -> return Expr ;
+Return -> return ;
+While -> while Whilem1 ( Expr ) Whilem2 Block
+Whilem1 -> null
+Whilem2 -> null
+If -> if Ifm1 ( Expr ) Ifm2 Block Else
+Ifm1 -> null
+Ifm2 -> null
+Else -> Ifm3 else Block
+Ifm3 -> null
+Expr -> Add Relop Expr
+Expr -> Add
+Relop -> <
+Relop -> <=
+Relop -> >
+Relop -> >=
+Relop -> ==
+Relop -> !=
+Add -> Item + Add
+Add -> Item - Add
+Add -> Item
+Item -> Factor * Item
+Item -> Factor / Item
+Item -> Factor
+Factor -> num
+Factor -> ( Expr )
+Factor -> id FTYPE
+FTYPE -> Call
+FTYPE -> null
+Call -> ( ActualPara )
+ActualPara -> ActualParaList
+ActualPara -> null
+ActualParaList -> Expr , ActualParaList
+ActualParaList -> Expr

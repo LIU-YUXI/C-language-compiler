@@ -1,36 +1,39 @@
 #include "./LexicalAnalysis.h"
 #include <iostream>
-void LexicalAnalysis::getWordMap(string srcCode)
+#include <sstream>
+stringstream LexicalAnalysis::getWordMap(string srcCode)
 {
+    stringstream ret;
 	if (srcCode == "")
-		return;
+        return ret;
 	regex regexID("^[a-zA-Z][a-zA-Z0-9]{0,}");
-	regex regexNUM("^[0-9][0-9]{0,}");
-	LexicalHashToken lextoken;
+    // regex regexNUM("^[0-9][0-9]{0,}");
+    regex regexNUM("^[0-9]{0,}[.]{0,2}[0-9][0-9]{0,}");
+    LexicalHashToken lextoken(this->loc);
 	while (!srcCode.empty()) {
 		string thisChar = srcCode.substr(0, 1);
 		string charType = getCharType(thisChar);
 		std::smatch matchResult;
 		if (charType == "LETTER") {
 			if (regex_search(srcCode, matchResult, regexID)) {
-				// »Áπ˚ «πÿº¸◊÷
+				// Â¶ÇÊûúÊòØÂÖ≥ÈîÆÂ≠ó
 				if (lextoken.isKeyWord(matchResult.str())) {
 					int lexno = lextoken.getToken(matchResult.str());
-					cout << "(" << lexno << "," << matchResult.str() << ")    ";
+                    ret << "(" << lexno << "," << matchResult.str() << ")    ";
 				}
-				// ∑Ò‘Úø…ƒ‹ «ID
+				// Âê¶ÂàôÂèØËÉΩÊòØID
 				else {
-					int lexno = lextoken.getToken("ID");
-					cout << "(" << lexno << "," << matchResult.str() << ")    ";
+					int lexno = lextoken.getToken("id");
+                    ret << "(" << lexno << "," << matchResult.str() << ")    ";
 				}
 				srcCode = srcCode.c_str() + int( matchResult.length());
 			}
 		}
 		else if (charType == "NUMBER") {
 			if (regex_search(srcCode, matchResult, regexNUM)) {
-				// »Áπ˚ « ˝◊÷
-				int lexno = lextoken.getToken("NUM");
-				cout << "(" << lexno << "," << matchResult.str() << ")    ";
+				// Â¶ÇÊûúÊòØÊï∞Â≠ó
+				int lexno = lextoken.getToken("num");
+                ret << "(" << lexno << "," << matchResult.str() << ")    ";
 
 				srcCode = srcCode.c_str() + int(matchResult.length());
 			}
@@ -38,33 +41,34 @@ void LexicalAnalysis::getWordMap(string srcCode)
 		else if (charType=="BLANK") {
 			srcCode = srcCode.c_str() + 1;
 		}
-		// ≥˝ ˝◊÷ø’∏Ò◊÷ƒ∏“‘Õ‚µƒ∑˚∫≈
+		// Èô§Êï∞Â≠óÁ©∫Ê†ºÂ≠óÊØç‰ª•Â§ñÁöÑÁ¨¶Âè∑
 		else if (charType=="SPECIAL") {
-			// œ»Õ˘∫Û∂¡“ªŒª£¨“ÚŒ™∑˚∫≈ø…ƒ‹ «>=’‚—˘µƒ
+			// ÂÖàÂæÄÂêéËØª‰∏Ä‰ΩçÔºåÂõ†‰∏∫Á¨¶Âè∑ÂèØËÉΩÊòØ>=ËøôÊ†∑ÁöÑ
 			if (srcCode.length() > 1) {
 				string nextChar = srcCode.substr(1, 1);
 				string nextCharType = getCharType(nextChar);
-				// ∂¡≥ˆÃÿ ‚∑˚∫≈±Ì
+				// ËØªÂá∫ÁâπÊÆäÁ¨¶Âè∑Ë°®
 				map<string, int> specialMap = lextoken.getLexicalHashMap();
 				string char2= thisChar + nextChar;
 				if (nextCharType == "SPECIAL" && specialMap.count(thisChar+nextChar)) {
 					int lexno = lextoken.getToken(thisChar + nextChar);
-					cout << "(" << lexno << "," << thisChar + nextChar << ")    ";
+                    ret << "(" << lexno << "," << thisChar + nextChar << ")    ";
 					srcCode = srcCode.c_str() + 2;
 				}
-				else {// ∑Ò‘Ú÷ªø¥µ±«∞Ãÿ ‚◊÷∑˚
+				else {// Âê¶ÂàôÂè™ÁúãÂΩìÂâçÁâπÊÆäÂ≠óÁ¨¶
 					int lexno = lextoken.getToken(thisChar);
-					cout << "(" << lexno << "," << thisChar << ")    ";
+                    ret << "(" << lexno << "," << thisChar << ")    ";
 					srcCode = srcCode.c_str() + 1;
 				}
 			}
 			else {
 				int lexno = lextoken.getToken(thisChar);
-				cout << "(" << lexno << "," << thisChar << ")    ";
+                ret << "(" << lexno << "," << thisChar << ")    ";
 				srcCode = srcCode.c_str() + 1;
 			}
 		}
 	}
+    return ret;
 }
 
 string LexicalAnalysis::getCharType(string str) {
@@ -83,27 +87,123 @@ string LexicalAnalysis::getCharType(string str) {
 
 }
 
-void LexicalAnalysis::printWordMap(string srcFile) {
+string LexicalAnalysis::printWordMap(string srcFile) {
 	ReadSources rs(srcFile);
 	list<string>srcCodeList = rs.getCodeList();
 	int length = srcCodeList.size() + 1;
-	list<string>::iterator itor = srcCodeList.begin();
-	cout << endl << "‘¥¬Î" << endl;
+    // list<string>::iterator itor = srcCodeList.begin();
+    /*
+	cout << endl << "Ê∫êÁ†Å" << endl;
 	for (int i = 1; i < length; i++) {
 		cout << "line " << i << " ";
 		cout << *itor++ << endl;
 	}
-	cout << endl << "¥ ∑®∑÷ŒˆΩ·π˚" << endl;
+	cout << endl << "ËØçÊ≥ïÂàÜÊûêÁªìÊûú" << endl;
+    */
+    string ret;
 	for (int i = 1; i < length ; i++) {
-		cout << "line " << i<<" ";
-		getWordMap(srcCodeList.front());
-		cout << endl ;
+        stringstream t;
+        t<< "line " << i<<" ";
+        ret+=t.str();
+        ret+=getWordMap(srcCodeList.front()).str();
+        ret+="\n" ;
+		srcCodeList.pop_front();
+	}
+    return ret;
+}
+/*
+void LexicalAnalysis::buildTokenList(string srcFile) {
+	ReadSources rs(srcFile);
+	list<string>srcCodeList = rs.getCodeList();
+	int length = srcCodeList.size() + 1;
+	list<string>::iterator itor = srcCodeList.begin();
+	for (int i = 1; i < length; i++) {
+		this->buildToken(srcCodeList.front());
+		srcCodeList.pop_front();
+	}
+}
+*/
+void LexicalAnalysis::buildTokenVector(string srcFile)
+{
+	ReadSources rs(srcFile);
+	list<string>srcCodeList = rs.getCodeList();
+	int length = srcCodeList.size() + 1;
+	list<string>::iterator itor = srcCodeList.begin();
+	regex regexID("^[a-zA-Z][a-zA-Z0-9]{0,}");
+    // regex regexNUM("^[0-9][0-9]{0,}");
+    regex regexNUM("^[0-9]{0,}[.]{0,2}[0-9][0-9]{0,}");
+    LexicalHashToken lextoken(this->loc);
+	for (int i = 1; i < length; i++) {
+		string srcCode = srcCodeList.front();
+		while (!srcCode.empty()) {
+			string thisChar = srcCode.substr(0, 1);
+			string charType = getCharType(thisChar);
+			std::smatch matchResult;
+			if (charType == "LETTER") {
+				if (regex_search(srcCode, matchResult, regexID)) {
+					// Â¶ÇÊûúÊòØÂÖ≥ÈîÆÂ≠ó
+					if (lextoken.isKeyWord(matchResult.str())) {
+						int lexno = lextoken.getToken(matchResult.str());
+                        this->TokenList.push_back(Token(lexno, matchResult.str(),i));
+						// cout << "(" << lexno << "," << matchResult.str() << ")    ";
+					}
+					// Âê¶ÂàôÂèØËÉΩÊòØID
+					else {
+						int lexno = lextoken.getToken("id");
+                        this->TokenList.push_back(Token(lexno, matchResult.str(),string("id"),i));
+						// cout << "(" << lexno << "," << matchResult.str() << ")    ";
+					}
+					srcCode = srcCode.c_str() + int(matchResult.length());
+				}
+			}
+			else if (charType == "NUMBER") {
+				if (regex_search(srcCode, matchResult, regexNUM)) {
+					// Â¶ÇÊûúÊòØÊï∞Â≠ó
+					int lexno = lextoken.getToken("num");
+                    this->TokenList.push_back(Token(lexno, matchResult.str(),string("num"),i));
+					//cout << "(" << lexno << "," << matchResult.str() << ")    ";
+
+					srcCode = srcCode.c_str() + int(matchResult.length());
+				}
+			}
+			else if (charType == "BLANK") {
+				srcCode = srcCode.c_str() + 1;
+			}
+			// Èô§Êï∞Â≠óÁ©∫Ê†ºÂ≠óÊØç‰ª•Â§ñÁöÑÁ¨¶Âè∑
+			else if (charType == "SPECIAL") {
+				// ÂÖàÂæÄÂêéËØª‰∏Ä‰ΩçÔºåÂõ†‰∏∫Á¨¶Âè∑ÂèØËÉΩÊòØ>=ËøôÊ†∑ÁöÑ
+				if (srcCode.length() > 1) {
+					string nextChar = srcCode.substr(1, 1);
+					string nextCharType = getCharType(nextChar);
+					// ËØªÂá∫ÁâπÊÆäÁ¨¶Âè∑Ë°®
+					map<string, int> specialMap = lextoken.getLexicalHashMap();
+					string char2 = thisChar + nextChar;
+					if (nextCharType == "SPECIAL" && specialMap.count(thisChar + nextChar)) {
+						int lexno = lextoken.getToken(thisChar + nextChar);
+                        this->TokenList.push_back(Token(lexno, thisChar + nextChar,i));
+						// cout << "(" << lexno << "," << thisChar + nextChar << ")    ";
+						srcCode = srcCode.c_str() + 2;
+					}
+					else {// Âê¶ÂàôÂè™ÁúãÂΩìÂâçÁâπÊÆäÂ≠óÁ¨¶
+						int lexno = lextoken.getToken(thisChar);
+                        this->TokenList.push_back(Token(lexno, thisChar,i));
+						// cout << "(" << lexno << "," << thisChar << ")    ";
+						srcCode = srcCode.c_str() + 1;
+					}
+				}
+				else {
+					int lexno = lextoken.getToken(thisChar);
+					// cout << "(" << lexno << "," << thisChar << ")    ";
+                    this->TokenList.push_back(Token(lexno, thisChar,i));
+					srcCode = srcCode.c_str() + 1;
+				}
+			}
+		}
 		srcCodeList.pop_front();
 	}
 }
 
-int main()
-{
-	LexicalAnalysis lexer;
-	lexer.printWordMap("./src.txt");
+vector<Token> LexicalAnalysis::getTokenList() {
+	return this->TokenList;
 }
+

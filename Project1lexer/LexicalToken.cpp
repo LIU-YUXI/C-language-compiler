@@ -2,12 +2,25 @@
 #include <fstream>
 #include "./LexicalAnalysis.h"
 using namespace std;
+#include "ActionAndGoto.h"
+// extern map<string, int> loc;//ç»ˆç»“ç¬¦åœ¨Actionè¡¨ä¸­çš„ä½ç½®
 
-/*LexicalTokenÀà³ÉÔ±º¯ÊıµÄÊµÏÖ*/
 
-
-LexicalHashToken::LexicalHashToken() {
+LexicalHashToken::LexicalHashToken(map<string, int> loc) {
     //LexicalHashMap = new LinkedHashMap;
+    LexicalHashMap = loc;
+    /*
+    LexicalHashMap.insert(pair<string, int>("if", 0));
+    LexicalHashMap.insert(pair<string, int>("else", 1));
+    LexicalHashMap.insert(pair<string, int>("(", 2));
+    LexicalHashMap.insert(pair<string, int>(")", 3));
+    LexicalHashMap.insert(pair<string, int>("+", 4));
+    LexicalHashMap.insert(pair<string, int>(">", 5));
+    LexicalHashMap.insert(pair<string, int>("&&", 6));
+    LexicalHashMap.insert(pair<string, int>("NUM", 7));// ä¸€èˆ¬æ ‡è¯†ç¬¦
+    LexicalHashMap.insert(pair<string, int>("ID", 7));// ä¸€èˆ¬æ ‡è¯†ç¬¦
+    */
+    /*
     LexicalHashMap.insert(pair<string, int>("#", 0));
     LexicalHashMap.insert(pair<string, int>("for", 1));
     LexicalHashMap.insert(pair<string, int>("if", 2));
@@ -15,8 +28,8 @@ LexicalHashToken::LexicalHashToken() {
     LexicalHashMap.insert(pair<string, int>("else", 4));
     LexicalHashMap.insert(pair<string, int>("while", 5));
     LexicalHashMap.insert(pair<string, int>("do", 6));
-    LexicalHashMap.insert(pair<string, int>("ID", 10));// Ò»°ã±êÊ¶·û
-    LexicalHashMap.insert(pair<string, int>("NUM", 11));// Êı×Ö
+    LexicalHashMap.insert(pair<string, int>("ID", 10));// ä¸€èˆ¬æ ‡è¯†ç¬¦
+    LexicalHashMap.insert(pair<string, int>("NUM", 11));// æ•°å­—
     LexicalHashMap.insert(pair<string, int>("+", 13));
     LexicalHashMap.insert(pair<string, int>("-", 14));
     LexicalHashMap.insert(pair<string, int>("*", 15));
@@ -33,8 +46,8 @@ LexicalHashToken::LexicalHashToken() {
     LexicalHashMap.insert(pair<string, int>("(", 27));
     LexicalHashMap.insert(pair<string, int>(")", 28));
     LexicalHashMap.insert(pair<string, int>("//", 29));
-    LexicalHashMap.insert(pair<string, int>("/*", 30));
-    LexicalHashMap.insert(pair<string, int>("*/", 31));
+    LexicalHashMap.insert(pair<string, int>("*", 30));
+    LexicalHashMap.insert(pair<string, int>("*", 31));
     LexicalHashMap.insert(pair<string, int>("==", 32));
     LexicalHashMap.insert(pair<string, int>("!=", 33));
     LexicalHashMap.insert(pair<string, int>(",", 34));
@@ -43,6 +56,7 @@ LexicalHashToken::LexicalHashToken() {
     LexicalHashMap.insert(pair<string, int>("return", 37));
     LexicalHashMap.insert(pair<string, int>("{", 38));
     LexicalHashMap.insert(pair<string, int>("}", 39));
+    */
 }
 map<string, int> LexicalHashToken::getLexicalHashMap() {
     return LexicalHashMap;
@@ -54,20 +68,18 @@ int LexicalHashToken::getToken(string word) {
         return -1;
     return LexicalHashMap[word];
 }
-//¾²Ì¬³ÉÔ±²»ÄÜÔÚÀàÖĞ³õÊ¼»¯,¾²Ì¬³ÉÔ±º¯ÊıÔÚÀàÍâÊµÏÖÊ±ºòÎŞĞë¼Óstatic¹Ø¼ü×Ö
+//é™æ€æˆå‘˜ä¸èƒ½åœ¨ç±»ä¸­åˆå§‹åŒ–,é™æ€æˆå‘˜å‡½æ•°åœ¨ç±»å¤–å®ç°æ—¶å€™æ— é¡»åŠ staticå…³é”®å­—
 bool LexicalHashToken::isKeyWord(string word) {
-    if (word == "")//¿ÕÖ¸ÏòÈçºÎ±íÊ¾£¿
+    if (word == "")//ç©ºæŒ‡å‘å¦‚ä½•è¡¨ç¤ºï¼Ÿ
         return false;
     string keyWord[] = { "int", "for", "if", "then", "else",
-            "do", "while", "until", "input", "output","return","void" };
+            "do", "while", "until", "input", "output","return","void","float","switch","case","default"};
     for (string aWord : keyWord)
         if (word == aWord)
             return true;
     return false;
 }
 
-
-/*ReadSources³ÉÔ±º¯ÊıµÄÊµÏÖ*/
 ReadSources::ReadSources(string fileName) {
     //CodeList = new LinkedList<>();
     ifstream src(fileName);
@@ -77,6 +89,7 @@ ReadSources::ReadSources(string fileName) {
         CodeList.insert(CodeList.end(), line);
         //CodeList.add(src.getline());
     }
+    src.close();
 }
 
 list<string> ReadSources::getCodeList() {

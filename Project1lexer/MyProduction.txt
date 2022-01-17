@@ -1,0 +1,36 @@
+Program -> Type id ( ) Block
+Type -> int
+Type -> void
+Block -> { Inner String }
+Inner -> null
+Inner -> InnerVar ; Inner
+InnerVar -> int id
+String -> Sentense String
+String -> null
+Sentense -> If
+Sentense -> While
+Sentense -> Return
+Sentense -> Equal
+Equal -> id = Expr ;
+Return -> return Expr ;
+While -> while ( Expr ) Block
+If -> if ( Expr ) Block Else
+Else -> else Block
+Else -> null
+Expr -> Add Relop Expr
+Expr -> Add
+Relop -> <
+Relop -> <=
+Relop -> >
+Relop -> >=
+Relop -> ==
+Relop -> !=
+Add -> Item + Add
+Add -> Item - Add
+Add -> Item
+Item -> Factor * Item
+Item -> Factor / Item
+Item -> Factor
+Factor -> num
+Factor -> ( Expr )
+Factor -> id 

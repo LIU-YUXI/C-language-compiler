@@ -1,17 +1,30 @@
-
-#include <stdio.h>
-#include <math.h>
-#include <Windows.h>
-
-//(x^2 + y^2 - 1)^3 - x^2*y^3 = 0
-
-int main() {
-	for (int y = 15; y >= -1; y = y - 1) {
-		for (int x = -10; x <= 10; x = x + 5) {
-			int a = x * x + y * y - 1;
-			putchar(pow(a, 3) - pow(x, 2)*pow(y, 3));
-		}
-		putchar('\n');
+float  program(int a,float b,int c)
+{
+	float i;
+	int j;
+	i=0; 	
+	if(a>b+c)
+	{
+		j=a+b*(c+1);
 	}
-	system("pause");
+	else
+	{
+		j=a;
+	}
+	while(i<=100)
+	{
+		i=j*2.5;
+	}
+	return i;
+}
+
+int main(){
+      int a;
+      int c;
+      float b;
+      float d;
+      c=22;
+      b=33.33;
+      d=program(a,b,c);
+      return 0;
 }

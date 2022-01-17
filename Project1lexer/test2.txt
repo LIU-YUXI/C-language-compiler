@@ -1,0 +1,61 @@
+S' -> Program
+Program -> StatString
+StatString -> State StatString
+State -> int id StatType
+State -> void id StatType
+State -> float id StatType
+StatType -> VarStat
+StatType -> FuncStat
+VarStat -> null
+FuncStat -> ( FormalPara ) Block
+FormalPara -> ParaList
+FormalPara -> null
+FormalPara -> void
+ParaList -> Para , ParaList
+ParaList -> Para
+Para -> int id
+Para -> float id
+Block -> { Inner String }
+Inner -> null
+Inner -> InnerVar ; Inner
+InnerVar -> int id
+InnerVar -> float id
+String -> Sentense String
+String -> null
+Sentense -> If
+Sentense -> While
+Sentense -> Return
+Sentense -> Equal
+Equal -> id = Expr ;
+Return -> return Expr ;
+Return -> return ;
+While -> while ( Expr ) Block
+If -> if ( Expr ) Block Else
+Else -> else Block
+Else -> null
+Expr -> Add Relop Expr
+Expr -> Add
+Relop -> <
+Relop -> <=
+Relop -> >
+Relop -> >=
+Relop -> ==
+Relop -> !=
+Add -> Item + Add
+Add -> Item - Add
+Add -> Item
+Item -> Factor * Item
+Item -> Factor / Item
+Item -> Factor
+Factor -> num
+Factor -> ( Expr )
+Factor -> id FTYPE
+FTYPE -> call
+FTYPE -> null
+call -> ( ActualParaList )
+ActualPara -> ActualParaList
+ActualPara -> null
+ActualParaList -> Expr , ActualParaList
+ActualParaList -> Expr
+Expr -> id
+

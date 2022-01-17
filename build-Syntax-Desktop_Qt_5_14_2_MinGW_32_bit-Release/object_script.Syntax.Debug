@@ -1,0 +1,10 @@
+debug/ActionAndGoto.o
+debug/LexicalAnalysis.o
+debug/LexicalToken.o
+debug/SemanticAnalysis.o
+debug/SyntaxAnalyzer.o
+debug/childwindow.o
+debug/main.o
+debug/syntax.o
+debug/moc_childwindow.o
+debug/moc_syntax.o

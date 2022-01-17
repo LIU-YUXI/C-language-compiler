@@ -1,0 +1,10 @@
+release/ActionAndGoto.o
+release/LexicalAnalysis.o
+release/LexicalToken.o
+release/SemanticAnalysis.o
+release/SyntaxAnalyzer.o
+release/childwindow.o
+release/main.o
+release/syntax.o
+release/moc_childwindow.o
+release/moc_syntax.o

@@ -4,33 +4,95 @@
 #include <string>
 #include <regex>
 using namespace std;
+class Token {
+private:
+    int type;
+    string content;
+    string typestr;
+public:
+    int father;
+    int pos; // åœ¨è¯­æ³•æ ‘ä¸­çš„ä½ç½®
+    bool is_vn;
+    int row; // åœ¨æºæ–‡ä»¶çš„ç¬¬å‡ è¡Œ
+    int getType() {
+        return this->type;
+    }
+    string getTypestr() {
+        return this->typestr;
+    }
+    string getContent() {
+        return this->content;
+    }
+    Token() {
+        type = -1;
+        content = "";
+        father = -1;
+        pos = -1;
+        is_vn = false;
+        row=0;
+    }
+    Token(int type, string content) {
+        this->type = type;
+        this->content = content;
+        this->typestr = content;
+        this->row=0;
+        father = -1;
+        pos = -1;
+        is_vn = false;
+    }
+    Token(int type, string content,int row) {
+        this->type = type;
+        this->content = content;
+        this->typestr = content;
+        this->row=row;
+        father = -1;
+        pos = -1;
+        is_vn = false;
+    }
+    Token(int type, string content, string typestr,int row) {
+        this->type = type;
+        this->content = content;
+        this->typestr = typestr;
+        this->row=row;
+        father = -1;
+        pos = -1;
+        is_vn=false;
+    }
+    Token(int type, string content,bool is_vn) {
+        this->type = type;
+        this->content = content;
+        this->typestr = content;
+        father = -1;
+        pos = -1;
+        this->is_vn = is_vn;
+    }
+};
 
 class LexicalHashToken {
 private:
-    //hash_map<string, int> LexicalHashMap;
     map<string, int> LexicalHashMap;
 public:
     /**
-     * TODO ³õÊ¼»¯´Ê·¨¼ÇºÅ±í
+     * TODO åˆå§‹åŒ–è¯æ³•è®°å·è¡¨
      */
-    LexicalHashToken();
+    LexicalHashToken(map<string, int> loc);
     /**
-     * TODO »ñµÃ´Ê·¨¼ÇºÅ±í
-     * @return ´Ê·¨¼ÇºÅ±íLexicalTokenMap
+     * TODO è·å¾—è¯æ³•è®°å·è¡¨
+     * @return è¯æ³•è®°å·è¡¨LexicalTokenMap
      */
     map<string, int> getLexicalHashMap();
 
     /**
-     * TODO ¸ù¾İ¸ø¶¨µÄ´Ê·¨µ¥Ôª£¬·µ»Ø¶ÔÓ¦µÄ´Ê·¨¼ÇºÅ
-     * @param word ´Ê·¨µ¥Ôª
-     * @return ´Ê·¨¼ÇºÅtoken
+     * TODO æ ¹æ®ç»™å®šçš„è¯æ³•å•å…ƒï¼Œè¿”å›å¯¹åº”çš„è¯æ³•è®°å·
+     * @param word è¯æ³•å•å…ƒ
+     * @return è¯æ³•è®°å·token
      */
     int getToken(string word);
 
     /**
-     * TODO ÅĞ¶ÏÒ»¸ö±êÊ¶·ûÊÇ·ñÎª¹Ø¼ü×Ö
-     * @param word ±êÊ¶·û
-     * @return booleanÖµ
+     * TODO åˆ¤æ–­ä¸€ä¸ªæ ‡è¯†ç¬¦æ˜¯å¦ä¸ºå…³é”®å­—
+     * @param word æ ‡è¯†ç¬¦
+     * @return booleanå€¼
      */
     static bool isKeyWord(string word);
 };
@@ -38,29 +100,32 @@ public:
 
 class ReadSources {
 private:
-    list<string> CodeList;  // Ã¿Ò»¸ö½ÚµãÎªÒ»ĞĞ´úÂëµÄÁ´±í
+    list<string> CodeList;  // æ¯ä¸€ä¸ªèŠ‚ç‚¹ä¸ºä¸€è¡Œä»£ç çš„é“¾è¡¨
 
 public:
     /**
-     * TODO ¶ÁÈ¡¸ø¶¨µÄÔ´´úÂëÎÄ¼ş£¬²¢½«ÆäÃ¿Ò»ĞĞ×÷ÎªÒ»¸öÁ´±íµÄÒ»¸ö½Úµã
-     * @param fileName Ô´´úÂëÎÄ¼şÂ·¾¶
-     * @throws IOException
+     * TODO è¯»å–ç»™å®šçš„æºä»£ç æ–‡ä»¶ï¼Œå¹¶å°†å…¶æ¯ä¸€è¡Œä½œä¸ºä¸€ä¸ªé“¾è¡¨çš„ä¸€ä¸ªèŠ‚ç‚¹
+     * @param fileName æºä»£ç æ–‡ä»¶è·¯å¾„
      */
     ReadSources(string fileName);
     /**
-     * TODO »ñµÃÔ´´úÂëÎÄ¼şÉú³ÉµÄÁ´±í
-     * @return Ô´´úÂëÎÄ¼ş¶ÔÓ¦µÄÁ´±í
+     * TODO è·å¾—æºä»£ç æ–‡ä»¶ç”Ÿæˆçš„é“¾è¡¨
+     * @return æºä»£ç æ–‡ä»¶å¯¹åº”çš„é“¾è¡¨
      */
     list<string> getCodeList();
 };
 
 class LexicalAnalysis {
-    /**
-     *
-     * @param srcCode Ò»ĞĞ´úÂë
-     */
+    vector<Token>TokenList; // vectorå‚¨å­˜æºç¨‹åºä¸­æ‰€æœ‰token
+    map<string, int> loc;
 public:
-    void getWordMap(string srcCode);
+    LexicalAnalysis(map<string, int> loc){
+        this->loc=loc; // ç»ˆç»“ç¬¦åœ¨actionè¡¨ä¸Šçš„ä½ç½®ï¼ˆå³tokençš„åºå·
+    };
+    stringstream getWordMap(string srcCode);
     static string getCharType(string str);
-    void printWordMap(string fileName);
+    string printWordMap(string fileName);
+    void buildTokenVector(string fileName);
+    // void buildToken(string srcCode);
+    vector<Token> getTokenList();
 };
